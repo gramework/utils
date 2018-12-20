@@ -3,8 +3,6 @@ package grametentTypes
 import (
 	"path/filepath"
 	"sync"
-
-	"github.com/kirillDanshin/myutils"
 )
 
 const (
@@ -128,6 +126,7 @@ var extToContentType = map[string]string{
 	".funk":        "audio/make",
 	".g3":          "image/g3fax",
 	".g":           "text/plain",
+	".go":          "text/plain",
 	".gif":         "image/gif",
 	".gl":          "video/gl",
 	".gsd":         "audio/x-gsm",
@@ -559,19 +558,17 @@ var ctLock = sync.RWMutex{}
 // RegisterContentType adds or replaces a contentType for given extension
 func RegisterContentType(ext, contentType string) {
 	if ext != emptyString && ext[0] != dotByte {
-		ext = myutils.Concat(dotString, ext)
+		ext = dotString + ext
 	}
 	ctLock.Lock()
 	extToContentType[ext] = contentType
 	ctLock.Unlock()
 }
 
-// TypeByExtension returns the Content-Type type associated with the file extension ext.
-func TypeByExtension(fullfilename string) (t string) {
+// TypeByExtension returns the Content-Type associated with the file extension.
+func TypeByExtension(fullFilename string) (t string) {
 	ctLock.RLock()
-	defer ctLock.RUnlock()
-	if ct, ok := extToContentType[filepath.Ext(fullfilename)]; ok {
-		return ct
-	}
-	return emptyString
+	ct := extToContentType[filepath.Ext(fullFilename)]
+	ctLock.RUnlock()
+	return ct
 }
