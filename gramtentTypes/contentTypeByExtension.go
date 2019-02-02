@@ -566,9 +566,9 @@ func RegisterContentType(ext, contentType string) {
 }
 
 // TypeByExtension returns the Content-Type associated with the file extension.
-func TypeByExtension(fullFilename string) (t string) {
+func TypeByExtension(fullFilename string) (ct string) {
 	ctLock.RLock()
-	ct := extToContentType[filepath.Ext(fullFilename)]
+	ct = extToContentType[filepath.Ext(fullFilename)]
 	ctLock.RUnlock()
-	return ct
+	return
 }
